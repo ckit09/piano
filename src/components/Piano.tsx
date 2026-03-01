@@ -33,9 +33,9 @@ const KEY_MAP: Record<string, number> = {
 
   // ===== EXTENDED REACH (Bottom Row) =====
   // More white keys for higher octave
-  'z': 65, // F5
-  'x': 67, // G5
-  '=': 69, // A5
+  '\'': 65, // F5
+  'm': 67, // G5
+  ',': 69, // A5
   '.': 71, // B5
   '/': 72, // C6
 
