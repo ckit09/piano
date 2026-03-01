@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "deploy": "npm run build && git add dist && git commit -m 'Deploy' && git push origin main"
+    "preview": "vite preview"
   },
   "dependencies": {
     "autoprefixer": "^10.4.27",
