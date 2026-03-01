@@ -35,9 +35,9 @@ const KEY_MAP: Record<string, number> = {
   // More white keys for higher octave
   'z': 65, // F5
   'x': 67, // G5
-  'v': 69, // A5
-  'n': 71, // B5
-  'm': 72, // C6
+  '=': 69, // A5
+  '.': 71, // B5
+  '/': 72, // C6
 
   // ===== SHARPS/FLATS (Top Row - Number keys) =====
   // Easily accessible for chromatic play
