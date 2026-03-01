@@ -80,6 +80,27 @@ export const Piano: React.FC<PianoProps> = ({
   const activeTouchesRef = useRef<Map<number, number>>(new Map())
   const animationTimeoutRef = useRef<Map<number, NodeJS.Timeout>>(new Map())
 
+    const triggerAnimation = (midiNote: number) => {
+    // Clear any existing timeout for this key
+    const existingTimeout = animationTimeoutRef.current.get(midiNote)
+    if (existingTimeout) clearTimeout(existingTimeout)
+
+    // Add animation
+    setAnimatingKeys((prev) => new Set([...prev, midiNote]))
+
+    // Remove animation after it completes (longest animation is keyGlow at 400ms)
+    const timeout = setTimeout(() => {
+      setAnimatingKeys((prev) => {
+        const next = new Set(prev)
+        next.delete(midiNote)
+        return next
+      })
+      animationTimeoutRef.current.delete(midiNote)
+    }, 420)
+
+    animationTimeoutRef.current.set(midiNote, timeout)
+  }
+
   // Handle keyboard input
   useEffect(() => {
     if (disableInput) return
@@ -94,6 +115,7 @@ export const Piano: React.FC<PianoProps> = ({
         // Always play the note for zero-latency on consecutive presses
         audioEngine.playNote(midiNote)
         onNoteOn?.(midiNote)
+        triggerAnimation(midiNote)
         setPressedKeys((prev) => new Set([...prev, midiNote]))
       }
     }
@@ -121,27 +143,6 @@ export const Piano: React.FC<PianoProps> = ({
       window.removeEventListener('keyup', handleKeyUp)
     }
   }, [pressedKeys, disableInput, onNoteOn, onNoteOff, audioEngine])
-
-  const triggerAnimation = (midiNote: number) => {
-    // Clear any existing timeout for this key
-    const existingTimeout = animationTimeoutRef.current.get(midiNote)
-    if (existingTimeout) clearTimeout(existingTimeout)
-
-    // Add animation
-    setAnimatingKeys((prev) => new Set([...prev, midiNote]))
-
-    // Remove animation after it completes
-    const timeout = setTimeout(() => {
-      setAnimatingKeys((prev) => {
-        const next = new Set(prev)
-        next.delete(midiNote)
-        return next
-      })
-      animationTimeoutRef.current.delete(midiNote)
-    }, 100)
-
-    animationTimeoutRef.current.set(midiNote, timeout)
-  }
 
   const handleMouseDown = (midiNote: number) => {
     if (disableInput) return
@@ -219,10 +220,10 @@ export const Piano: React.FC<PianoProps> = ({
                 ${animatingKeys.has(midiNote) ? `piano-key-pressed piano-key-glow piano-key-flash ${isBlackKey ? 'piano-black-key-pressed' : 'piano-white-key-pressed'}` : ''}
                 ${
                   isBlackKey
-                    ? `w-10 h-28 bg-gray-800 border-2 border-gray-700 -mr-5 z-10 shadow-md
+                    ? `w-10 h-28 ${animatingKeys.has(midiNote) ? '' : 'bg-gray-800'} border-2 border-gray-700 -mr-5 z-10 shadow-md
                        ${isPressed ? 'bg-gray-700 shadow-lg shadow-inset' : ''}
                        ${isHighlighted ? 'bg-yellow-500 shadow-lg shadow-yellow-400' : ''}`
-                    : `w-14 h-36 bg-white border-2 border-gray-400 shadow-md
+                    : `w-14 h-36 ${animatingKeys.has(midiNote) ? '' : 'bg-white'} border-2 border-gray-400 shadow-md
                        ${isPressed ? 'bg-gray-50 shadow-lg' : ''}
                        ${isHighlighted ? 'bg-green-300 shadow-lg shadow-green-400' : ''}`
                 }
