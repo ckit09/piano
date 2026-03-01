@@ -17,7 +17,6 @@ A React + Vite web application featuring two distinct modes for playing and lear
   - Mary Had a Little Lamb (Easy)
   - Jingle Bells (Medium)
   - Happy Birthday (Easy)
-  - 天ノ弱/Teno Yowai (Hard)
 - **Real-Time Guidance**: 
   - Highlighted next key to press
   - Hand position guides (finger and hand indicators)
