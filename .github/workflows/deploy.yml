@@ -13,11 +13,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm ci
+          # Fix PostCSS native binding issue (npm optional dependencies bug)
+          npm rebuild
       
       - name: Build
         run: npm run build
@@ -27,4 +30,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          cname: piano.example.com
